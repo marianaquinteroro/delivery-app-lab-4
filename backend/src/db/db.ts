@@ -22,7 +22,22 @@ export const initDb = async () => {
       name TEXT NOT NULL,
       role TEXT NOT NULL,
       email TEXT NOT NULL UNIQUE,
-      store_name TEXT NULL
+      password TEXT NOT NULL
     );
   `);
+
+  await pool.query(`
+    CREATE TABLE IF NOT EXISTS public.stores (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    name TEXT NOT NULL,
+    is_open BOOLEAN NOT NULL,
+    user_owner_id UUID NOT NULL UNIQUE,
+
+    CONSTRAINT store_user
+    FOREIGN KEY (user_owner_id)
+    REFERENCES public.users(id)
+    ON DELETE CASCADE
+    );
+
+    `);
 };
