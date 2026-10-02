@@ -17,7 +17,7 @@ export const getUserByIdRepository = async (id: string) => {
 export const createUserRepository = async (user: CreateUserDTO) => {
   try {
     const result = await pool.query(
-      "INSERT INTO users (name, role, email, password) VALUES ($1, $2, $3, $4) RETURNING id, name, role, email, store_name",
+      "INSERT INTO users (name, role, email, password) VALUES ($1, $2, $3, $4) RETURNING id, name, role, email",
       [user.name, user.role, user.email, user.password],
     );
     console.log("CREATED USER:", result.rows[0]);
