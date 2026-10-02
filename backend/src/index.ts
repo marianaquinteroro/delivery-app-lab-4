@@ -1,9 +1,9 @@
 import express, { Request, Response, Router } from "express";
 import userRouter from "./features/users/users.router";
 import storesRouter from "./features/stores/stores.router";
-// import  from "/features/stores/stores.router";
 import { initDb } from "./db/db";
 import { errorHandler } from "./middlewares/errorMiddleware";
+import authRouter from "./features/auth/auth.routes";
 
 const PORT = process.env.PORT || 8080;
 const cors = require("cors");
@@ -19,8 +19,10 @@ app.get("/", (_req: Request, res: Response) => {
   res.json({ status: "ok", timestamp: new Date().toISOString() });
 });
 
+apiRouter.use('/auth', authRouter)
 apiRouter.use("/users", userRouter);
 apiRouter.use("/stores", storesRouter);
+
 app.use(errorHandler);
 
 app.listen(PORT, async () => {

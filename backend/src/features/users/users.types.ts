@@ -6,7 +6,6 @@ export interface User {
   age: number;
   email: string;
   role: userRole;
-  storeName?: string | null;
 }
 
 export interface CreateUserDTO {
