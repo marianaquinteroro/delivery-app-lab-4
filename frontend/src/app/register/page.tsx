@@ -4,8 +4,9 @@ import { useState } from "react";
 
 const initialSignInFormState = {
   name: "",
-  email: "",
   role: "consumer",
+  email: "",
+  password: "",
   store_name: "",
 };
 
@@ -58,6 +59,13 @@ export default function SignIn() {
           name="email"
           placeholder="Email"
           value={signInForm.email}
+          onChange={(e) => handleSignInForm(e)}
+        />
+        <input
+          type="text"
+          name="password"
+          placeholder="Password"
+          value={signInForm.password}
           onChange={(e) => handleSignInForm(e)}
         />
 
