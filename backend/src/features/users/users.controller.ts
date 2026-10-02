@@ -21,33 +21,28 @@ export const getUserByIdController = async (req: Request, res: Response) => {
 };
 
 export const createUserController = async (req: Request, res: Response) => {
-  const { name, email, role, store_name } = req.body;
-
-  console.log(store_name);
-  
+  const { name, email, role, password, store_name } = req.body;
 
   if (!name) {
     throw Boom.badRequest("Name is required");
-}
+  }
 
-if (!role) {
+  if (!role) {
     throw Boom.badRequest("Role is required");
   }
 
   if (!email) {
     throw Boom.badRequest("Email is required");
   }
+
   if (role === "store" && !store_name) {
-    throw Boom.badRequest("Store name is required");
+    throw Boom.badRequest("Store Name is required");
   }
 
-  const userObj = {
-    name,
-    role,
-    email,
-    store_name,
-  };
+  if (!password) {
+    throw Boom.badRequest("Password is required");
+  }
 
-  const newUser = await CreateUserService(userObj);
+  const newUser = await CreateUserService({ name, email, role, password, store_name });
   res.status(201).json(newUser);
 };

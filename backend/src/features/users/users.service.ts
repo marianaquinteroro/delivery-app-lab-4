@@ -5,6 +5,7 @@ import {
   getUsersRepository,
 } from "./users.repositor";
 import { CreateUserDTO } from "./users.types";
+import { createStoreRepository } from "../stores/stores.repository";
 
 export const getUsersService = async () => {
   const users = await getUsersRepository();
@@ -23,6 +24,19 @@ export const getUserByIdService = async (id: string) => {
 };
 
 export const CreateUserService = async (user: CreateUserDTO) => {
-  const newUser = await createUserRepository(user);
-  return newUser;
+  try {
+    const newUser = await createUserRepository(user);
+
+    if (user.role === "store" && user.store_name) {
+      await createStoreRepository({
+        name: user.store_name,
+        is_open: false,
+        user_owner_id: newUser.id,
+      });
+    }
+
+    return newUser;
+  } catch (error) {
+    throw error;
+  }
 };

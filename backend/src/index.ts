@@ -1,5 +1,7 @@
 import express, { Request, Response, Router } from "express";
 import userRouter from "./features/users/users.router";
+import storesRouter from "./features/stores/stores.router";
+// import  from "/features/stores/stores.router";
 import { initDb } from "./db/db";
 import { errorHandler } from "./middlewares/errorMiddleware";
 
@@ -18,6 +20,7 @@ app.get("/", (_req: Request, res: Response) => {
 });
 
 apiRouter.use("/users", userRouter);
+apiRouter.use("/stores", storesRouter);
 app.use(errorHandler);
 
 app.listen(PORT, async () => {

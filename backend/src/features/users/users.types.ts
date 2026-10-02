@@ -13,7 +13,13 @@ export interface CreateUserDTO {
   name: string;
   role: userRole;
   email: string;
+  password: string;
   store_name?: string | null;
+}
+
+export interface CreateStoreDTO {
+  name: string;
+  is_open: boolean;
 }
 
 // export interface UpdateUserDTO {
