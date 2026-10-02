@@ -3,8 +3,8 @@
 import { useState } from "react";
 
 const initialLoginFormState = {
-  name: "",
   email: "",
+  password: "",
 };
 
 export default function Login() {
@@ -18,9 +18,22 @@ export default function Login() {
     });
   };
 
-  const handleSubmit = (e: React.SubmitEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: React.SubmitEvent<HTMLFormElement>) => {
     e.preventDefault();
-    console.log(loginForm);
+    try {
+      const res = await fetch("http://localhost:8080/auth/login", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(loginForm),
+      });
+
+      const data = await res.json();
+      console.log(data);
+    } catch (error) {
+      console.error(error);
+    }
   };
 
   return (
@@ -28,17 +41,17 @@ export default function Login() {
       <h2>Hello from Login</h2>
       <form action="" onSubmit={handleSubmit}>
         <input
-          type="text"
-          name="name"
-          placeholder="User Name"
-          value={loginForm.name}
-          onChange={(e) => handleLoginForm(e)}
-        />
-        <input
-          type="text"
+          type="email"
           name="email"
           placeholder="Email"
           value={loginForm.email}
+          onChange={(e) => handleLoginForm(e)}
+        />
+        <input
+          type="password"
+          name="password"
+          placeholder="Password"
+          value={loginForm.password}
           onChange={(e) => handleLoginForm(e)}
         />
         <button>Log In</button>
