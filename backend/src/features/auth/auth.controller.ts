@@ -12,5 +12,5 @@ export const loginController = async (req: Request, res: Response) => {
   }
   const userLogged = await loginService({ email, password });
 
-  res.status(200).json(userLogged);
+  res.status(200).json({ user: userLogged });
 };

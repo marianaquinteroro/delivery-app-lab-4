@@ -1,5 +1,8 @@
 "use client";
 
+import { useAuth } from "@/src/hooks/useAuth";
+import { LoginResponse } from "@/src/types/auth.types";
+import { useRouter } from "next/navigation";
 import { useState } from "react";
 
 const initialLoginFormState = {
@@ -9,6 +12,8 @@ const initialLoginFormState = {
 
 export default function Login() {
   const [loginForm, setLoginForm] = useState(initialLoginFormState);
+  const { setUser } = useAuth();
+  const router = useRouter();
 
   const handleLoginForm = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -29,8 +34,29 @@ export default function Login() {
         body: JSON.stringify(loginForm),
       });
 
-      const data = await res.json();
-      console.log(data);
+      const data: LoginResponse = await res.json();
+
+      if (!res.ok) {
+        throw new Error(data.error || "Incorrect Email or Password");
+      }
+
+      console.log(data.user);
+      setUser(data.user);
+
+      switch (data.user.role) {
+        case "consumer":
+          router.push("/client");
+          break;
+        case "store":
+          router.push("/store-admin");
+          break;
+        case "delivery":
+          router.push("/delivery");
+          break;
+
+        default:
+          break;
+      }
     } catch (error) {
       console.error(error);
     }

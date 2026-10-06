@@ -1,0 +1,17 @@
+"use client";
+
+import { useAuth } from "@/src/hooks/useAuth";
+
+export default function Delivery() {
+  const { isLoading, user } = useAuth();
+
+  return (
+    <div>
+      {isLoading ? (
+        <p>Loading user</p>
+      ) : (
+        <h2>Hello from Store - Admin Page {user?.name}</h2>
+      )}
+    </div>
+  );
+}
