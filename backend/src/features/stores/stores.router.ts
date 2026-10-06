@@ -1,9 +1,8 @@
-import { Request, Response, Router } from "express";
+import { Router } from "express";
+import { getStoresController } from "./stores.controller";
 
 const router = Router();
 
-router.get("/", (_req: Request, res: Response) => {
-  res.status(200).json({ message: "connected to store router" });
-});
+router.get("/", getStoresController);
 
 export default router;

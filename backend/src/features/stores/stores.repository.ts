@@ -1,5 +1,10 @@
 import { pool } from "../../db/db";
-import { CreateStoreDTO } from "./stores.types";
+import { CreateStoreDTO, Store } from "./stores.types";
+
+export const getStoresRepository = async () => {
+  const result = await pool.query<Store[]>("SELECT * from stores");
+  return result.rows;
+};
 
 export const createStoreRepository = async (store: CreateStoreDTO) => {
   try {
