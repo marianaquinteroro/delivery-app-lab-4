@@ -8,7 +8,7 @@ import {
 const router = Router();
 
 router.get("/", getStoresController);
+router.get("/:userOwnerId", getStoreByUserIdController);
 router.get("/store-detail/:storeId", getStoreDetailController);
-// router.get("/owner/:userId", getStoreByUserIdController);
 
 export default router;

@@ -20,8 +20,8 @@ export const getStoreByUserIdController = async (
   req: Request,
   res: Response,
 ) => {
-  const { userId } = req.params;
-  const store = await getStoreByUserIdService(String(userId));
+  const { userOwnerId } = req.params;
+  const store = await getStoreByUserIdService(String(userOwnerId));
   res.status(200).json(store);
 };
 

@@ -13,8 +13,8 @@ export const getStoresService = async () => {
   return openStores;
 };
 
-export const getStoreByUserIdService = async (user_owner_id: string) => {
-  const store = await getStoreByUserIdRepository(user_owner_id);
+export const getStoreByUserIdService = async (userOwnerId: string) => {
+  const store = await getStoreByUserIdRepository(userOwnerId);
   if (!store) {
     throw Boom.badRequest("Store not found");
   }
