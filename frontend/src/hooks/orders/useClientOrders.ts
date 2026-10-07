@@ -6,7 +6,6 @@ import { useAuth } from "../useAuth";
 
 export const useClientOrders = () => {
   const { user } = useAuth();
-
   const [orders, setOrders] = useState<OrderByClient[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -14,7 +13,7 @@ export const useClientOrders = () => {
   useEffect(() => {
     const controller = new AbortController();
 
-    const getStoreDetail = async () => {
+    const getOrdersByClientId = async () => {
       try {
         const res = await fetch(`http://localhost:8080/orders/${user?.id}`, {
           signal: controller.signal,
@@ -43,7 +42,7 @@ export const useClientOrders = () => {
       }
     };
 
-    getStoreDetail();
+    getOrdersByClientId();
 
     return () => controller.abort();
   }, [user?.id]);

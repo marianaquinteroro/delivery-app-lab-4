@@ -21,7 +21,7 @@ export interface OrderItemDTO {
   quantity: number;
 }
 
-export interface CreateOderDTO {
+export interface CreateOrderDTO {
   user_id: string;
   store_id: string;
   items: OrderItemDTO[];
