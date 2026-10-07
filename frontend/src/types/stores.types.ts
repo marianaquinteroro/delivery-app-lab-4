@@ -12,13 +12,8 @@ export interface Product {
   store_id: string;
 }
 
-export interface StoreDetial {
+export interface StoreDetail {
   store: Store;
   products: Product[];
 }
 
-export interface CreateStoreDTO {
-  name: string;
-  is_open: boolean;
-  user_owner_id: string;
-}

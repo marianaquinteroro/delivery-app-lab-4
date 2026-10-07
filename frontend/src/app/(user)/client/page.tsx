@@ -1,5 +1,6 @@
 "use client";
 
+import { ClientStoresList } from "@/src/components/store/ClientStoresList";
 import { useAuth } from "@/src/hooks/useAuth";
 
 export default function Client() {
@@ -12,6 +13,7 @@ export default function Client() {
       ) : (
         <h2>Hello from Consumer/Client Page {user?.name}</h2>
       )}
+      <ClientStoresList />
     </div>
   );
 }

@@ -1,4 +1,3 @@
-import { PoolClient } from "pg";
 import { pool } from "../../db/db";
 import { CreateUserDTO, User } from "./users.types";
 

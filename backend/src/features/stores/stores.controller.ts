@@ -1,14 +1,35 @@
 import { Request, Response } from "express";
 import { CreateStoreDTO } from "./stores.types";
 import Boom from "@hapi/boom";
-import { createStoreService, getStoresService } from "./stores.service";
+import {
+  createStoreService,
+  getStoreByUserIdService,
+  getStoreDetailService,
+  getStoresService,
+} from "./stores.service";
 
 export const getStoresController = async (_req: Request, res: Response) => {
   const stores = await getStoresService();
-  if (stores.length < 0) {
+  if (stores.length === 0) {
     throw Boom.badRequest("No stores found");
   }
   res.status(200).json(stores);
+};
+
+export const getStoreByUserIdController = async (
+  req: Request,
+  res: Response,
+) => {
+  const { userId } = req.params;
+  const store = await getStoreByUserIdService(String(userId));
+  res.status(200).json(store);
+};
+
+export const getStoreDetailController = async (req: Request, res: Response) => {
+  const { storeId } = req.params;
+  const storeDetail = await getStoreDetailService(String(storeId));
+  if (!storeDetail) throw Boom.notFound("Store not found");
+  res.status(200).json(storeDetail);
 };
 
 export const createStoreController = async (

@@ -1,9 +1,36 @@
 import { pool } from "../../db/db";
-import { CreateStoreDTO, Store } from "./stores.types";
+import { CreateStoreDTO, Product, Store, StoreDetial } from "./stores.types";
 
 export const getStoresRepository = async () => {
-  const result = await pool.query<Store[]>("SELECT * from stores");
+  const result = await pool.query<Store>("SELECT * from stores");
   return result.rows;
+};
+
+export const getStoreByUserIdRepository = async (userOwnerId: string) => {
+  const result = await pool.query<Store>(
+    "SELECT * from stores WHERE user_owner_id=$1",
+    [userOwnerId],
+  );
+  return result.rows;
+};
+
+export const getStoreDetailRepository = async (id: string) => {
+  const resultStore = await pool.query<Store>(
+    "SELECT * from stores WHERE id=$1",
+    [id],
+  );
+
+  const storeProductsResult = await pool.query<Product>(
+    "SELECT * from products WHERE store_id=$1",
+    [resultStore.rows[0].id],
+  );
+
+  const storeDetial: StoreDetial = {
+    store: resultStore.rows[0],
+    products: storeProductsResult.rows,
+  };
+
+  return storeDetial;
 };
 
 export const createStoreRepository = async (store: CreateStoreDTO) => {
