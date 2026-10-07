@@ -41,7 +41,7 @@ export default function StoreDetailPage() {
       );
 
       if (exists) {
-       return prevOrderItems.map((item) =>
+        return prevOrderItems.map((item) =>
           item.product_id === product.id
             ? {
                 ...item,
@@ -108,7 +108,12 @@ export default function StoreDetailPage() {
                   -
                 </button>
                 <p>{getQuantity(product.id)}</p>
-                <button onClick={() => handleAddQuantity(product.id)}>+</button>
+                <button
+                  onClick={() => handleAddQuantity(product.id)}
+                  disabled={storeDetail.store.is_open === false}
+                >
+                  +
+                </button>
               </div>
               <button
                 className="bg-red-500 disabled:bg-red-200"
@@ -121,7 +126,9 @@ export default function StoreDetailPage() {
           <button
             className="bg-blue-500 disabled:bg-blue-100"
             onClick={handleCreateOrder}
-            disabled={orderItems.length === 0}
+            disabled={
+              orderItems.length === 0 || storeDetail?.store.is_open === false
+            }
           >
             Create Order
           </button>

@@ -22,6 +22,7 @@ export interface Order {
   id: string;
   user_id: string;
   store_id: string;
+  delivery_id: string | null;
   status: OrderStatus;
   order_items: OrderItem[];
   create_at: string;

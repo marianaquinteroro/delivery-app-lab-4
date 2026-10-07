@@ -2,17 +2,23 @@
 
 import { ClientStoresList } from "@/src/components/store/ClientStoresList";
 import { useAuth } from "@/src/hooks/useAuth";
+import Link from "next/link";
 
 export default function Client() {
   const { user, isLoading } = useAuth();
 
+  if (isLoading) {
+    return (
+      <div>
+        <p>Loading user</p>
+      </div>
+    );
+  }
+
   return (
     <div>
-      {isLoading ? (
-        <p>Loading user</p>
-      ) : (
-        <h2>Hello from Consumer/Client Page {user?.name}</h2>
-      )}
+      <Link href={"/client/orders"}>My Orders</Link>
+      <h2>Hello {user?.name}</h2>
       <ClientStoresList />
     </div>
   );
