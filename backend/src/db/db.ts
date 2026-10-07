@@ -40,4 +40,24 @@ export const initDb = async () => {
     );
 
     `);
+
+  await pool.query(`
+    CREATE TABLE IF NOT EXISTS public.orders (
+    id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+    client_id uuid NOT NULL REFERENCES users(id),
+    delivery_id uuid REFERENCES users(id),
+    store_id uuid NOT NULL REFERENCES stores(id),
+    status text not null default 'waiting_for_delivery',
+    created_at timestamptz not null default now()
+      )
+      `);
+
+  await pool.query(`
+    CREATE TABLE IF NOT EXISTS public.order_items (
+    id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+    order_id uuid NOT NULL REFERENCES orders(id) ON DELETE CASCADE,
+    product_id uuid NOT NULL REFERENCES products(id),
+    quantity numeric NOT NULL CHECK (quantity > 0)
+  )
+        `);
 };
