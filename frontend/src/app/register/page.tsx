@@ -1,5 +1,7 @@
 "use client";
 
+import { useAuth } from "@/src/hooks/useAuth";
+import { useRouter } from "next/navigation";
 import { useState } from "react";
 
 const initialSignInFormState = {
@@ -12,6 +14,8 @@ const initialSignInFormState = {
 
 export default function SignIn() {
   const [signInForm, setSignInForm] = useState(initialSignInFormState);
+  const {setUser} = useAuth()
+  const router = useRouter();
 
   const handleSignInForm = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -38,6 +42,24 @@ export default function SignIn() {
 
       const data = await res.json();
       console.log(data);
+
+      setUser(data);
+
+      switch (data.role) {
+        case "consumer":
+          router.push("/client");
+          break;
+        case "store":
+          router.push("/store-admin");
+          break;
+        case "delivery":
+          router.push("/delivery");
+          break;
+
+        default:
+          break;
+      }
+
     } catch (error) {
       console.error(error);
     }
