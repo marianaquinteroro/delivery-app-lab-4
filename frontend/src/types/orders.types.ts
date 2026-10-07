@@ -7,6 +7,15 @@ export interface OrderItem {
   quantity: number;
 }
 
+export interface OrderByClient {
+  id: string;
+  client_id: string;
+  delivery_id: string | null;
+  store_id: string;
+  status: string;
+  created_at: string;
+}
+
 export interface OrderItemDTO {
   product_id: string;
   quantity: number;

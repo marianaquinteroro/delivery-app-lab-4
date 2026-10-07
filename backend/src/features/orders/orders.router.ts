@@ -1,11 +1,9 @@
 import { Request, Response, Router } from "express";
-import { createOrderController } from "./orders.controller";
+import { createOrderController, getOrdersByClientIdController } from "./orders.controller";
 
 const router = Router();
 
-router.get("/", (_req: Request, res: Response) => {
-  res.status(200).json({ message: "Connected " });
-});
+router.get("/:clientId", getOrdersByClientIdController);
 
 router.post("/create-order", createOrderController);
 

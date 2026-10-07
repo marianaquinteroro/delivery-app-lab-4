@@ -1,6 +1,14 @@
 import { pool } from "../../db/db";
 import { CreateOrderDTO } from "./orders.types";
 
+export const getOrderByClientId = async (clientId: string) => {
+  const result = await pool.query("SELECT * from orders WHERE client_id=$1", [
+    clientId,
+  ]);
+
+  return result.rows;
+};
+
 export const createOrderRepository = async (data: CreateOrderDTO) => {
   const orderResult = await pool.query(
     "INSERT INTO orders (client_id, store_id, status) VALUES ($1, $2, $3) RETURNING *",
