@@ -13,6 +13,9 @@ export const useStore = (userId: string) => {
   const [isUpdatingStatus, setIsUpdatingStatus] = useState(false);
   const [statusError, setStatusError] = useState<string | null>(null);
 
+  const [isCreatingProduct, setIsCreatingProduct] = useState(true);
+  const [productError, setProductError] = useState<string | null>(null);
+
   useEffect(() => {
     if (!userId) return;
     const controller = new AbortController();
@@ -88,6 +91,44 @@ export const useStore = (userId: string) => {
     }
   };
 
+  const createProduct = async (name: string, price: number) => {
+    setIsCreatingProduct(true);
+    setProductError(null);
+
+    try {
+      const res = await fetch(
+        `http://localhost:8080/products/new-product/${storeDetail?.store.id}`,
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            name,
+            price,
+          }),
+        },
+      );
+
+      if (!res.ok) {
+        throw new Error("Error creating product");
+      }
+
+      const product = await res.json();
+      setStoreDetail(
+        (prev) =>
+          prev && {
+            ...prev,
+            products: [...prev.products, product],
+          },
+      );
+      return true;
+    } catch (error) {
+      console.error(error);
+      return false;
+    } finally {
+      setIsCreatingProduct(false);
+    }
+  };
+
   return {
     storeDetail,
     isLoadingStoreDetail,
@@ -95,5 +136,8 @@ export const useStore = (userId: string) => {
     updateStoreStatus,
     isUpdatingStatus,
     statusError,
+    createProduct,
+    isCreatingProduct,
+    productError,
   };
 };

@@ -2,6 +2,7 @@
 
 import { useStore } from "@/src/hooks/stores/useStore";
 import { useAuth } from "@/src/hooks/useAuth";
+import Link from "next/link";
 
 export default function Store() {
   const { user, isLoading } = useAuth();
@@ -13,7 +14,7 @@ export default function Store() {
     statusError,
   } = useStore(String(user?.id));
 
-  if (isLoading) {
+  if (isLoading || isLoadingStoreDetail) {
     return <section>Loading...</section>;
   }
 
@@ -30,16 +31,17 @@ export default function Store() {
         {statusError && <p>{statusError}</p>}
       </div>
       <section>
+        <Link href="/store-admin/create-product">Create a product</Link>
         {storeDetail?.products.length === 0 ? (
           <p>No products</p>
-        ) : isLoadingStoreDetail ? (
-          <p>Loading Products...</p>
         ) : (
           <section>
             <p>{storeDetail?.store.name} Products</p>
             {storeDetail?.products.map((product) => (
               <article key={product.id}>
+                <button>Edit</button>
                 <p>{product.name}</p>
+                <p>${product.price}</p>
               </article>
             ))}
           </section>

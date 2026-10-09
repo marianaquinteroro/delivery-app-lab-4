@@ -2,6 +2,7 @@ import express, { Request, Response, Router } from "express";
 import userRouter from "./features/users/users.router";
 import storesRouter from "./features/stores/stores.router";
 import ordersRouter from "./features/orders/orders.router";
+import productsRouter from "./features/products/products.router";
 import { initDb } from "./db/db";
 import { errorHandler } from "./middlewares/errorMiddleware";
 import authRouter from "./features/auth/auth.routes";
@@ -23,6 +24,7 @@ app.get("/", (_req: Request, res: Response) => {
 apiRouter.use("/auth", authRouter);
 apiRouter.use("/users", userRouter);
 apiRouter.use("/stores", storesRouter);
+apiRouter.use("/products", productsRouter);
 apiRouter.use("/orders", ordersRouter);
 
 app.use(errorHandler);
