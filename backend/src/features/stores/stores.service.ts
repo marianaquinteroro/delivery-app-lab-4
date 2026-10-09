@@ -4,6 +4,7 @@ import {
   getStoreByUserIdRepository,
   getStoreDetailRepository,
   getStoresRepository,
+  updateStoreStatusRepository,
 } from "./stores.repository";
 import { CreateStoreDTO } from "./stores.types";
 
@@ -20,6 +21,14 @@ export const getStoreByUserIdService = async (userOwnerId: string) => {
   }
 
   return store;
+};
+
+export const updateStoreStatusService = async (
+  storeId: string,
+  userId: string,
+  isOpen: boolean,
+) => {
+  return await updateStoreStatusRepository(storeId, userId, isOpen);
 };
 
 export const getStoreDetailService = async (store_id: string) => {

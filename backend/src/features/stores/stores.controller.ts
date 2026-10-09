@@ -6,6 +6,7 @@ import {
   getStoreByUserIdService,
   getStoreDetailService,
   getStoresService,
+  updateStoreStatusService,
 } from "./stores.service";
 
 export const getStoresController = async (_req: Request, res: Response) => {
@@ -30,6 +31,31 @@ export const getStoreDetailController = async (req: Request, res: Response) => {
   const storeDetail = await getStoreDetailService(String(storeId));
   if (!storeDetail) throw Boom.notFound("Store not found");
   res.status(200).json(storeDetail);
+};
+
+export const updateStoreStatusController = async (
+  req: Request,
+  res: Response,
+) => {
+  const { storeId } = req.params;
+  const { isOpen, userId } = req.body;
+
+
+  if (typeof userId !== "string" || typeof isOpen !== "boolean") {
+    throw Boom.badRequest("userId and isOpen are required");
+  }
+
+  const store = await updateStoreStatusService(
+    String(storeId),
+    String(userId),
+    isOpen,
+  );
+
+  if (!store) {
+    throw Boom.notFound("Store not found");
+  }
+
+  res.status(200).json(store);
 };
 
 export const createStoreController = async (

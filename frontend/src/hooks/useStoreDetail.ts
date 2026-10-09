@@ -5,7 +5,7 @@ import { StoreDetail } from "../types/stores.types";
 
 export const useStoreDetail = (storeId: string) => {
   const [storeDetail, setStoreDetail] = useState<StoreDetail | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
+  const [isLoadingStoreDetail, setIsLoadingStoreDetail] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
@@ -38,7 +38,7 @@ export const useStoreDetail = (storeId: string) => {
         setError(String(error));
       } finally {
         if (!controller.signal.aborted) {
-          setIsLoading(false);
+          setIsLoadingStoreDetail(false);
         }
       }
     };
@@ -50,7 +50,7 @@ export const useStoreDetail = (storeId: string) => {
 
   return {
     storeDetail,
-    isLoading,
+    isLoadingStoreDetail,
     error,
   };
 };

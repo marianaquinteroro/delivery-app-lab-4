@@ -6,7 +6,7 @@ import { useParams } from "next/navigation";
 
 export default function StoreDetailPage() {
   const { storeId } = useParams<{ storeId: string }>();
-  const { storeDetail, isLoading, error } = useStoreDetail(storeId);
+  const { storeDetail, isLoadingStoreDetail, error } = useStoreDetail(storeId);
 
   const {
     handleDeleteQuantity,
@@ -25,7 +25,7 @@ export default function StoreDetailPage() {
     );
   }
 
-  if (isLoading) {
+  if (isLoadingStoreDetail) {
     return (
       <section>
         <p>Loading Store Detail...</p>

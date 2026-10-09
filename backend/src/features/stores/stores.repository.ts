@@ -7,11 +7,39 @@ export const getStoresRepository = async () => {
 };
 
 export const getStoreByUserIdRepository = async (userOwnerId: string) => {
-  const result = await pool.query<Store>(
+  const resultStore = await pool.query<Store>(
     "SELECT * from stores WHERE user_owner_id=$1",
     [userOwnerId],
   );
-  return result.rows;
+
+  const storeProductsResult = await pool.query<Product>(
+    "SELECT * from products WHERE store_id=$1",
+    [resultStore.rows[0].id],
+  );
+
+  const storeDetial: StoreDetial = {
+    store: resultStore.rows[0],
+    products: storeProductsResult.rows,
+  };
+
+  return storeDetial;
+};
+
+export const updateStoreStatusRepository = async (
+  storeId: string,
+  userId: string,
+  isOpen: boolean,
+) => {
+  const result = await pool.query(
+    `
+    UPDATE stores SET is_open = $1
+    WHERE id = $2 AND user_owner_id = $3
+    RETURNING *
+    `,
+    [isOpen, storeId, userId],
+  );
+
+  return result.rows[0];
 };
 
 export const getStoreDetailRepository = async (id: string) => {

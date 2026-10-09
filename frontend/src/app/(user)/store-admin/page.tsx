@@ -1,11 +1,17 @@
 "use client";
 
+import { useStore } from "@/src/hooks/stores/useStore";
 import { useAuth } from "@/src/hooks/useAuth";
-import { useStoreDetail } from "@/src/hooks/useStoreDetail";
 
 export default function Store() {
   const { user, isLoading } = useAuth();
-  const { storeDetail } = useStoreDetail(String(user?.id));
+  const {
+    storeDetail,
+    isLoadingStoreDetail,
+    updateStoreStatus,
+    isUpdatingStatus,
+    statusError,
+  } = useStore(String(user?.id));
 
   if (isLoading) {
     return <section>Loading...</section>;
@@ -14,14 +20,23 @@ export default function Store() {
   return (
     <div>
       <h2>
-        {user?.name} is {storeDetail?.store.is_open ? "Open" : "Closed"}
+        {storeDetail?.store.name} is{" "}
+        {storeDetail?.store.is_open ? "Open" : "Closed"}
       </h2>
+      <div>
+        <button onClick={updateStoreStatus} disabled={isUpdatingStatus}>
+          {storeDetail?.store.is_open ? "Close store" : "Open store"}
+        </button>
+        {statusError && <p>{statusError}</p>}
+      </div>
       <section>
-        <p>My products</p>
         {storeDetail?.products.length === 0 ? (
           <p>No products</p>
+        ) : isLoadingStoreDetail ? (
+          <p>Loading Products...</p>
         ) : (
           <section>
+            <p>{storeDetail?.store.name} Products</p>
             {storeDetail?.products.map((product) => (
               <article key={product.id}>
                 <p>{product.name}</p>
