@@ -44,6 +44,7 @@ export default function CreateProductPage() {
         />
         <input
           type="number"
+          min="0"
           value={productPrice}
           placeholder="Product Price"
           onChange={(e) => setProductPrice(e.target.value)}

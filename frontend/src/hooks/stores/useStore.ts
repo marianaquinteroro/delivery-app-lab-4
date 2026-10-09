@@ -1,7 +1,7 @@
 "use client";
 
 import { useAuth } from "@/src/hooks/useAuth";
-import { Store, StoreDetail } from "@/src/types/stores.types";
+import { Product, Store, StoreDetail } from "@/src/types/stores.types";
 import { useEffect, useState } from "react";
 
 export const useStore = (userId: string) => {
@@ -15,6 +15,8 @@ export const useStore = (userId: string) => {
 
   const [isCreatingProduct, setIsCreatingProduct] = useState(true);
   const [productError, setProductError] = useState<string | null>(null);
+
+  const [isUpdatingProduct, setIsUpdatingProduct] = useState(false);
 
   useEffect(() => {
     if (!userId) return;
@@ -129,6 +131,43 @@ export const useStore = (userId: string) => {
     }
   };
 
+  const updateProduct = async (
+    productId: string,
+    name: string,
+    price: number,
+  ) => {
+    setIsUpdatingProduct(true);
+
+    try {
+      const res = await fetch(`http://localhost:8080/products/${productId}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ name, price }),
+      });
+
+      if (!res.ok) {
+        throw new Error("Couldn't update the product");
+      }
+
+      const updated: Product = await res.json();
+      setStoreDetail(
+        (prev) =>
+          prev && {
+            ...prev,
+            products: prev.products.map((p) =>
+              p.id === updated.id ? updated : p,
+            ),
+          },
+      );
+      return null;
+    } catch (error) {
+      console.error(error);
+      return "Couldn't update the product";
+    } finally {
+      setIsUpdatingProduct(false);
+    }
+  };
+
   return {
     storeDetail,
     isLoadingStoreDetail,
@@ -139,5 +178,7 @@ export const useStore = (userId: string) => {
     createProduct,
     isCreatingProduct,
     productError,
+    isUpdatingProduct,
+    updateProduct,
   };
 };
