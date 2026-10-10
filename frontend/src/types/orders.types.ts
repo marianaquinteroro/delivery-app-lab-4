@@ -18,6 +18,7 @@ export interface OrderByClient {
 
 export interface OrderItemDTO {
   product_id: string;
+  name?: string;
   quantity: number;
 }
 

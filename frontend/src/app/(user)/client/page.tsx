@@ -16,10 +16,16 @@ export default function Client() {
   }
 
   return (
-    <div>
-      <Link href={"/client/orders"}>My Orders</Link>
-      <h2>Hello {user?.name}</h2>
+    <main className="flex flex-col gap-4 m-6">
+      <div className="flex items-end gap-1">
+        <h2 className="text-3xl font-bold">Hello,</h2>
+        <p className="text-2xl">{user?.name}</p>
+      </div>
+      <div className="flex items-end gap-4">
+        <p className="text-2xl font-medium">Stores</p>
+        <Link className="text-gray-900 hover:underline" href={"/client/orders"}>My orders</Link>
+      </div>
       <ClientStoresList />
-    </div>
+    </main>
   );
 }

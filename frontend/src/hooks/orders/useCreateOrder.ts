@@ -54,6 +54,7 @@ export const useCreateOrder = () => {
         ...prevOrderItems,
         {
           product_id: product.id,
+          name: product.name,
           quantity,
         },
       ];
@@ -85,6 +86,8 @@ export const useCreateOrder = () => {
       const data = await res.json();
 
       console.log("Order created:", data);
+
+      alert("Order created. Ty <3")
 
       router.push("/client/orders");
     } catch (error) {

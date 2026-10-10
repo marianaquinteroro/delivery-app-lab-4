@@ -5,6 +5,9 @@ import { LoginResponse } from "@/src/types/auth.types";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 
+import { Input } from "@/src/components/ui/Input";
+import { Button } from "@/src/components/ui/Button";
+
 const initialLoginFormState = {
   email: "",
   password: "",
@@ -12,6 +15,7 @@ const initialLoginFormState = {
 
 export default function Login() {
   const [loginForm, setLoginForm] = useState(initialLoginFormState);
+  const [error, setError] = useState(false);
   const { setUser } = useAuth();
   const router = useRouter();
 
@@ -37,6 +41,7 @@ export default function Login() {
       const data: LoginResponse = await res.json();
 
       if (!res.ok) {
+        setError(true);
         throw new Error(data.error || "Incorrect Email or Password");
       }
 
@@ -62,26 +67,37 @@ export default function Login() {
     }
   };
 
+  const isValid =
+    loginForm.email.trim() !== "" || loginForm.password.trim() !== "";
+
   return (
-    <div>
-      <h2>Hello from Login</h2>
-      <form action="" onSubmit={handleSubmit}>
-        <input
-          type="email"
-          name="email"
-          placeholder="Email"
-          value={loginForm.email}
-          onChange={(e) => handleLoginForm(e)}
-        />
-        <input
-          type="password"
-          name="password"
-          placeholder="Password"
-          value={loginForm.password}
-          onChange={(e) => handleLoginForm(e)}
-        />
-        <button>Log In</button>
-      </form>
-    </div>
+    <main className="h-dvh flex items-center justify-center">
+      <div className="flex flex-col">
+        <h2 className="text-3xl font-bold">Welcome Back!</h2>
+        <form
+          action=""
+          className="mt-4 flex flex-col gap-4"
+          onSubmit={handleSubmit}
+        >
+          <Input
+            type="email"
+            name="email"
+            placeholder="Email"
+            value={loginForm.email}
+            onChange={(e) => handleLoginForm(e)}
+          />
+          <Input
+            type="password"
+            name="password"
+            placeholder="Password"
+            value={loginForm.password}
+            onChange={(e) => handleLoginForm(e)}
+          />
+          {error && <p className="text-red-400">Incorrect Email or Password</p>}
+
+          <Button disabled={!isValid}>Log In</Button>
+        </form>
+      </div>
+    </main>
   );
 }
