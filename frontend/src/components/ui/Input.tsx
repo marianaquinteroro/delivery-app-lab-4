@@ -5,7 +5,7 @@ export const Input = ({
   onChange,
   placeholder,
 }: {
-  type: "text" | "email" | "password";
+  type: "text" | "email" | "password" | "number";
   value: string;
   name: string;
   onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;

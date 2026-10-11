@@ -5,6 +5,9 @@ import { useAuth } from "@/src/hooks/useAuth";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 
+import { Input } from "@/src/components/ui/Input";
+import { Button } from "@/src/components/ui/Button";
+
 export default function CreateProductPage() {
   const { user } = useAuth();
   const router = useRouter();
@@ -33,30 +36,29 @@ export default function CreateProductPage() {
   };
 
   return (
-    <div>
-      <h2>Create a product</h2>
-      <form onSubmit={(e) => handleProductSubmit(e)}>
-        <input
+    <main className="flex flex-col items-center justify-center h-dvh">
+      <h2 className="text-2xl font-bold">Create a product</h2>
+      <form
+        onSubmit={(e) => handleProductSubmit(e)}
+        className="flex flex-col p-4 gap-4"
+      >
+        <Input
           type="text"
+          name="productName"
           value={productName}
           placeholder="Product Name"
           onChange={(e) => setProductName(e.target.value)}
         />
-        <input
+        <Input
           type="number"
-          min="0"
+          name="productName"
           value={productPrice}
           placeholder="Product Price"
           onChange={(e) => setProductPrice(e.target.value)}
         />
-        <button
-          className="bg-blue-300 disabled:bg-red-200"
-          disabled={!isValidProduct}
-        >
-          Create
-        </button>
+        <Button disabled={!isValidProduct}>Create</Button>
       </form>
       {error && <p>{error}</p>}
-    </div>
+    </main>
   );
 }
