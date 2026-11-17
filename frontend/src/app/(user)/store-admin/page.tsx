@@ -10,6 +10,7 @@ import Link from "next/link";
 
 import { Button } from "@/src/components/ui/Button";
 import { Input } from "@/src/components/ui/Input";
+import { StoreOrdersList } from "@/src/components/store/StoreOrdersList";
 
 export default function Store() {
   const { user, isLoading } = useAuth();
@@ -131,6 +132,7 @@ export default function Store() {
           </section>
         )}
       </section>
+      {storeDetail && <StoreOrdersList storeId={storeDetail.store.id} />}
     </main>
   );
 }
