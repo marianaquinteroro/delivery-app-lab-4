@@ -1,34 +1,34 @@
 "use client";
 
-import { OrderByClient } from "@/src/types/orders.types";
+import { apiFetch } from "@/src/lib/api";
+import { Order } from "@/src/types/orders.types";
 import { useEffect, useState } from "react";
 import { useAuth } from "../useAuth";
+import { useBroadcast } from "../useBroadcast";
+import { useToast } from "../useToast";
 
 export const useClientOrders = () => {
   const { user } = useAuth();
-  const [orders, setOrders] = useState<OrderByClient[]>([]);
+  const [orders, setOrders] = useState<Order[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const { toast, showToast, hideToast } = useToast();
 
   useEffect(() => {
+    if (!user) return;
     const controller = new AbortController();
 
     const getOrdersByClientId = async () => {
       try {
-        const res = await fetch(`http://localhost:8080/orders/${user?.id}`, {
+        const res = await apiFetch(`/orders/${user.id}`, {
           signal: controller.signal,
         });
 
-        if (res.status === 404) {
-          throw new Error("Store not found");
-        }
         if (!res.ok) {
-          throw new Error("Couldn't get Store");
+          throw new Error("Couldn't get orders");
         }
 
-        const data: OrderByClient[] = await res.json();
-        console.log(data);
-
+        const data: Order[] = await res.json();
         setOrders(data);
         setError(null);
       } catch (error) {
@@ -45,11 +45,26 @@ export const useClientOrders = () => {
     getOrdersByClientId();
 
     return () => controller.abort();
-  }, [user?.id]);
+  }, [user]);
+
+  useBroadcast(user ? `clients:${user.id}` : null, {
+    "order-status-updated": (payload) => {
+      const updated = payload as Order;
+      setOrders((prev) =>
+        prev.map((order) => (order.id === updated.id ? updated : order)),
+      );
+
+      if (updated.status === "delivered") {
+        showToast(`Your order from ${updated.store_name} has been delivered!`);
+      }
+    },
+  });
 
   return {
     orders,
     isLoading,
     error,
+    toast,
+    hideToast,
   };
 };

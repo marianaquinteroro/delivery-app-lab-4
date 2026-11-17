@@ -6,6 +6,7 @@ import { useStoreDetail } from "@/src/hooks/useStoreDetail";
 import { useParams } from "next/navigation";
 
 import { Button } from "@/src/components/ui/Button";
+import { LocationPicker } from "@/src/components/map/LocationPicker";
 
 export default function StoreDetailPage() {
   const { storeId } = useParams<{ storeId: string }>();
@@ -18,6 +19,9 @@ export default function StoreDetailPage() {
     handleAddOrderItems,
     handleCreateOrder,
     orderItems,
+    deliveryLocation,
+    setDeliveryLocation,
+    isCreating,
   } = useCreateOrder();
 
   if (error) {
@@ -36,11 +40,13 @@ export default function StoreDetailPage() {
     );
   }
 
+  const isClosed = storeDetail?.store.is_open === false;
+
   return (
     <main className="m-6">
       <h2 className="text-2xl font-bold">{storeDetail?.store.name}</h2>
       {storeDetail?.products.length === 0 ? (
-        <p>This store have no products</p>
+        <p>This store has no products</p>
       ) : (
         <div className="flex flex-col gap-4">
           <p className="text-lg mt-4">Products</p>
@@ -65,7 +71,7 @@ export default function StoreDetailPage() {
                     <button
                       className="cursor-pointer"
                       onClick={() => handleAddQuantity(product.id)}
-                      disabled={storeDetail.store.is_open === false}
+                      disabled={isClosed}
                     >
                       +
                     </button>
@@ -81,23 +87,35 @@ export default function StoreDetailPage() {
             ))}
           </section>
 
-          <div className="mt-6 w-fit p-4 rounded-xl flex flex-col gap-4 bg-gray-100">
+          <div className="mt-6 w-full max-w-xl p-4 rounded-xl flex flex-col gap-4 bg-gray-100">
             <p className="text-xl">Order summary</p>
             <div className="flex flex-col gap-2">
               {orderItems.map((order) => (
-                <div key={order.product_id} className="flex items-end justify-between gap-4">
+                <div
+                  key={order.product_id}
+                  className="flex items-end justify-between gap-4"
+                >
                   <p>{order.name}</p>
                   <p>x {order.quantity}</p>
                 </div>
               ))}
             </div>
+
+            <LocationPicker
+              value={deliveryLocation}
+              onChange={setDeliveryLocation}
+            />
+
             <Button
               onClick={() => handleCreateOrder(storeDetail!)}
               disabled={
-                orderItems.length === 0 || storeDetail?.store.is_open === false
+                orderItems.length === 0 ||
+                !deliveryLocation ||
+                isClosed ||
+                isCreating
               }
             >
-              Create Order
+              {isCreating ? "Creating..." : "Create Order"}
             </Button>
           </div>
         </div>

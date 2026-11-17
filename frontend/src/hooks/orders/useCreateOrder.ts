@@ -1,6 +1,11 @@
 "use client";
 
-import { CreateOrderDTO, OrderItemDTO } from "@/src/types/orders.types";
+import { apiFetch } from "@/src/lib/api";
+import {
+  CreateOrderDTO,
+  LatLng,
+  OrderItemDTO,
+} from "@/src/types/orders.types";
 import { useState } from "react";
 import { useAuth } from "../useAuth";
 import { Product, StoreDetail } from "@/src/types/stores.types";
@@ -9,11 +14,13 @@ import { useRouter } from "next/navigation";
 export const useCreateOrder = () => {
   const { user } = useAuth();
   const router = useRouter();
-  //   const [isLoading, setIsLoading] = useState(true);
-  //   const [error, setError] = useState<string | null>(null);
 
   const [quantity, setQuantity] = useState<Record<string, number>>({});
   const [orderItems, setOrderItems] = useState<OrderItemDTO[]>([]);
+  const [deliveryLocation, setDeliveryLocation] = useState<LatLng | null>(
+    null,
+  );
+  const [isCreating, setIsCreating] = useState(false);
 
   const handleAddQuantity = (productId: string) => {
     setQuantity((prevQuantity) => ({
@@ -32,8 +39,7 @@ export const useCreateOrder = () => {
   const getQuantity = (productId: string) => quantity[productId] ?? 1;
 
   const handleAddOrderItems = (product: Product) => {
-    // console.log("Click");
-    const quantity = getQuantity(product.id);
+    const productQuantity = getQuantity(product.id);
 
     setOrderItems((prevOrderItems) => {
       const exists = prevOrderItems.some(
@@ -43,10 +49,7 @@ export const useCreateOrder = () => {
       if (exists) {
         return prevOrderItems.map((item) =>
           item.product_id === product.id
-            ? {
-                ...item,
-                quantity,
-              }
+            ? { ...item, quantity: productQuantity }
             : item,
         );
       }
@@ -55,27 +58,26 @@ export const useCreateOrder = () => {
         {
           product_id: product.id,
           name: product.name,
-          quantity,
+          quantity: productQuantity,
         },
       ];
     });
   };
 
   const handleCreateOrder = async (storeDetail: StoreDetail) => {
-    if (!user) return;
+    if (!user || !deliveryLocation) return;
 
     const order: CreateOrderDTO = {
       user_id: user.id,
       store_id: storeDetail.store.id,
       items: orderItems,
+      delivery_location: deliveryLocation,
     };
 
+    setIsCreating(true);
     try {
-      const res = await fetch("http://localhost:8080/orders/create-order", {
+      const res = await apiFetch("/orders/create-order", {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
         body: JSON.stringify(order),
       });
 
@@ -84,14 +86,12 @@ export const useCreateOrder = () => {
       }
 
       const data = await res.json();
-
-      console.log("Order created:", data);
-
-      alert("Order created. Ty <3")
-
-      router.push("/client/orders");
+      router.push(`/client/orders/${data.id}`);
     } catch (error) {
       console.error("Error creating order:", error);
+      alert("Couldn't create the order");
+    } finally {
+      setIsCreating(false);
     }
   };
 
@@ -102,5 +102,8 @@ export const useCreateOrder = () => {
     handleAddQuantity,
     handleDeleteQuantity,
     handleCreateOrder,
+    deliveryLocation,
+    setDeliveryLocation,
+    isCreating,
   };
 };
