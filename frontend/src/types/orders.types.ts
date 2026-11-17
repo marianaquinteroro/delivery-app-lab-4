@@ -1,4 +1,9 @@
-export type OrderStatus = "“waiting_for_deliver" | "in_progress" | "delivered";
+export type OrderStatus = "waiting_for_delivery" | "in_progress" | "delivered";
+
+export interface LatLng {
+  lat: number;
+  lng: number;
+}
 
 export interface OrderItem {
   id: string;
@@ -7,14 +12,21 @@ export interface OrderItem {
   quantity: number;
 }
 
-export interface OrderByClient {
+export interface Order {
   id: string;
   client_id: string;
   delivery_id: string | null;
   store_id: string;
-  status: string;
+  store_name: string;
+  status: OrderStatus;
   created_at: string;
+  delivery_lat: number | null;
+  delivery_lng: number | null;
+  courier_lat: number | null;
+  courier_lng: number | null;
 }
+
+export type OrderByClient = Order;
 
 export interface OrderItemDTO {
   product_id: string;
@@ -26,14 +38,12 @@ export interface CreateOrderDTO {
   user_id: string;
   store_id: string;
   items: OrderItemDTO[];
+  delivery_location: LatLng;
 }
 
-export interface Order {
-  id: string;
-  user_id: string;
-  store_id: string;
-  delivery_id: string | null;
+export interface LocationUpdatedPayload {
+  orderId: string;
+  lat: number;
+  lng: number;
   status: OrderStatus;
-  order_items: OrderItem[];
-  create_at: string;
 }
