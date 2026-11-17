@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { StoreDetail } from "../types/stores.types";
+import { apiFetch } from "../lib/api";
 
 export const useStoreDetail = (storeId: string) => {
   const [storeDetail, setStoreDetail] = useState<StoreDetail | null>(null);
@@ -13,8 +14,8 @@ export const useStoreDetail = (storeId: string) => {
 
     const getStoreDetail = async () => {
       try {
-        const res = await fetch(
-          `http://localhost:8080/stores/store-detail/${storeId}`,
+        const res = await apiFetch(
+          `/stores/store-detail/${storeId}`,
           {
             signal: controller.signal,
           },

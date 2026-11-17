@@ -2,7 +2,8 @@ import { User } from "@/src/types/users.types";
 
 export interface AuthContextDTO {
   user: User | null;
-  setUser: (user: User | null) => void;
+  token: string | null;
   isLoading: boolean;
+  saveSession: (user: User, token: string) => void;
   logOut: () => void;
 }

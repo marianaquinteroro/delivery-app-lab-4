@@ -3,6 +3,9 @@
 import { Button } from "@/src/components/ui/Button";
 import { Input } from "@/src/components/ui/Input";
 import { useAuth } from "@/src/hooks/useAuth";
+import { apiFetch } from "@/src/lib/api";
+import { HOME_BY_ROLE } from "@/src/lib/routes";
+import { LoginResponse } from "@/src/types/auth.types";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 
@@ -16,8 +19,8 @@ const initialSignInFormState = {
 
 export default function SignIn() {
   const [signInForm, setSignInForm] = useState(initialSignInFormState);
-  const [error, setError] = useState(null);
-  const { setUser } = useAuth();
+  const [error, setError] = useState<string | null>(null);
+  const { saveSession } = useAuth();
   const router = useRouter();
 
   const handleSignInForm = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -31,44 +34,26 @@ export default function SignIn() {
 
   const handleSubmit = async (e: React.SubmitEvent<HTMLFormElement>) => {
     e.preventDefault();
-
-    // console.log(signInForm);
+    setError(null);
 
     try {
-      const res = await fetch("http://localhost:8080/users", {
+      const res = await apiFetch("/auth/register", {
         method: "POST",
-        headers: {
-          "Content-Type": "Application/json",
-        },
         body: JSON.stringify(signInForm),
       });
 
-      const data = await res.json();
+      const data: LoginResponse = await res.json();
 
-      if (data.statusCode === 400) {
-        setError(data.message)
+      if (!res.ok) {
+        setError(data.message || "Couldn't create the account");
+        return;
       }
 
-      console.log(data);
-
-      setUser(data);
-
-      switch (data.role) {
-        case "consumer":
-          router.push("/client");
-          break;
-        case "store":
-          router.push("/store-admin");
-          break;
-        case "delivery":
-          router.push("/delivery");
-          break;
-
-        default:
-          break;
-      }
+      saveSession(data.user, data.token);
+      router.push(HOME_BY_ROLE[data.user.role]);
     } catch (error) {
       console.error(error);
+      setError("Couldn't create the account");
     }
   };
 
@@ -89,7 +74,7 @@ export default function SignIn() {
             onChange={(e) => handleSignInForm(e)}
           />
           <Input
-            type="text"
+            type="email"
             name="email"
             placeholder="Email"
             value={signInForm.email}
@@ -98,7 +83,7 @@ export default function SignIn() {
           <Input
             type="password"
             name="password"
-            placeholder="Password"
+            placeholder="Password (min 6 characters)"
             value={signInForm.password}
             onChange={(e) => handleSignInForm(e)}
           />
@@ -130,7 +115,7 @@ export default function SignIn() {
             <option value="delivery">Delivery</option>
           </select>
           {error && <p className="text-red-400">{error}</p>}
-          <Button>Sing Up</Button>
+          <Button>Sign Up</Button>
         </form>
       </div>
     </main>

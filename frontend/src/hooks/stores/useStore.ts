@@ -3,6 +3,7 @@
 import { useAuth } from "@/src/hooks/useAuth";
 import { Product, Store, StoreDetail } from "@/src/types/stores.types";
 import { useEffect, useState } from "react";
+import { apiFetch } from "@/src/lib/api";
 
 export const useStore = (userId: string) => {
   const { user } = useAuth();
@@ -24,7 +25,7 @@ export const useStore = (userId: string) => {
 
     const getStoreDetail = async () => {
       try {
-        const res = await fetch(`http://localhost:8080/stores/${userId}`, {
+        const res = await apiFetch(`/stores/${userId}`, {
           signal: controller.signal,
         });
 
@@ -63,8 +64,8 @@ export const useStore = (userId: string) => {
     setStatusError(null);
 
     try {
-      const res = await fetch(
-        `http://localhost:8080/stores/${storeDetail.store.id}/status`,
+      const res = await apiFetch(
+        `/stores/${storeDetail.store.id}/status`,
         {
           method: "PATCH",
           headers: { "Content-Type": "application/json" },
@@ -98,8 +99,8 @@ export const useStore = (userId: string) => {
     setProductError(null);
 
     try {
-      const res = await fetch(
-        `http://localhost:8080/products/new-product/${storeDetail?.store.id}`,
+      const res = await apiFetch(
+        `/products/new-product/${storeDetail?.store.id}`,
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -139,7 +140,7 @@ export const useStore = (userId: string) => {
     setIsUpdatingProduct(true);
 
     try {
-      const res = await fetch(`http://localhost:8080/products/${productId}`, {
+      const res = await apiFetch(`/products/${productId}`, {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ name, price }),

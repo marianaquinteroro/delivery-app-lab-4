@@ -1,6 +1,8 @@
 "use client";
 
 import { useAuth } from "@/src/hooks/useAuth";
+import { apiFetch } from "@/src/lib/api";
+import { HOME_BY_ROLE } from "@/src/lib/routes";
 import { LoginResponse } from "@/src/types/auth.types";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
@@ -16,7 +18,7 @@ const initialLoginFormState = {
 export default function Login() {
   const [loginForm, setLoginForm] = useState(initialLoginFormState);
   const [error, setError] = useState(false);
-  const { setUser } = useAuth();
+  const { saveSession } = useAuth();
   const router = useRouter();
 
   const handleLoginForm = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -30,11 +32,8 @@ export default function Login() {
   const handleSubmit = async (e: React.SubmitEvent<HTMLFormElement>) => {
     e.preventDefault();
     try {
-      const res = await fetch("http://localhost:8080/auth/login", {
+      const res = await apiFetch("/auth/login", {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
         body: JSON.stringify(loginForm),
       });
 
@@ -42,33 +41,19 @@ export default function Login() {
 
       if (!res.ok) {
         setError(true);
-        throw new Error(data.error || "Incorrect Email or Password");
+        return;
       }
 
-      console.log(data.user);
-      setUser(data.user);
-
-      switch (data.user.role) {
-        case "consumer":
-          router.push("/client");
-          break;
-        case "store":
-          router.push("/store-admin");
-          break;
-        case "delivery":
-          router.push("/delivery");
-          break;
-
-        default:
-          break;
-      }
+      saveSession(data.user, data.token);
+      router.push(HOME_BY_ROLE[data.user.role]);
     } catch (error) {
       console.error(error);
+      setError(true);
     }
   };
 
   const isValid =
-    loginForm.email.trim() !== "" || loginForm.password.trim() !== "";
+    loginForm.email.trim() !== "" && loginForm.password.trim() !== "";
 
   return (
     <main className="h-dvh flex items-center justify-center">

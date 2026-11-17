@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { useAuth } from "./useAuth";
 import { Store } from "../types/stores.types";
+import { apiFetch } from "../lib/api";
 
 export const useStores = () => {
   const { user } = useAuth();
@@ -17,7 +18,7 @@ export const useStores = () => {
 
     const getStores = async () => {
       try {
-        const res = await fetch("http://localhost:8080/stores", {
+        const res = await apiFetch("/stores", {
           signal: controller.signal,
         });
 

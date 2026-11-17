@@ -1,4 +1,5 @@
 import { Header } from "@/src/components/user/Header";
+import { RequireAuth } from "@/src/components/auth/RequireAuth";
 
 export default function UserLayout({
   children,
@@ -6,9 +7,9 @@ export default function UserLayout({
   children: React.ReactNode;
 }) {
   return (
-    <>
-      <Header/>
+    <RequireAuth>
+      <Header />
       {children}
-    </>
+    </RequireAuth>
   );
 }
