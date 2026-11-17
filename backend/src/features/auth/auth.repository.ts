@@ -1,12 +1,11 @@
 import { pool } from "../../db/db";
-import { LoginDTO } from "./auth.types";
+import { AuthUser } from "./auth.types";
 
-export const loginRepository = async (credentials: LoginDTO) => {
-  const results = await pool.query(
-    `SELECT id, name, role, email FROM users WHERE email=$1 AND password=$2
-        `,
-    [credentials.email, credentials.password],
+export const getUserProfileByIdRepository = async (id: string) => {
+  const result = await pool.query<AuthUser>(
+    "SELECT id, name, role, email FROM public.users WHERE id = $1",
+    [id],
   );
 
-  return results.rows[0];
+  return result.rows[0];
 };

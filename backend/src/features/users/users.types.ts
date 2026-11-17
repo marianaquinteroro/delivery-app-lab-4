@@ -9,10 +9,10 @@ export interface User {
 }
 
 export interface CreateUserDTO {
+  id: string;
   name: string;
   role: userRole;
   email: string;
-  password: string;
   store_name?: string | null;
 }
 
@@ -20,9 +20,3 @@ export interface CreateStoreDTO {
   name: string;
   is_open: boolean;
 }
-
-// export interface UpdateUserDTO {
-//   userName?: string;
-//   age?: number;
-//   email?: string;
-// }
